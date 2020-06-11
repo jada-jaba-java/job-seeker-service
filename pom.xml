@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>jada-jaba-java</groupId>
+    <groupId>com.jadajabajava</groupId>
     <artifactId>job-seeker-service</artifactId>
     <version>1.0-SNAPSHOT</version>
 
