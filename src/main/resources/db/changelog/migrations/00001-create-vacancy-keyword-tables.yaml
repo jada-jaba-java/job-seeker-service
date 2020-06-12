@@ -1,0 +1,111 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: vacancy
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: region_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: nvarchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: ntext
+                  constraints:
+                    nullable: false
+              - column:
+                  name: min_salary
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_salary
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: nvarchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employment
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: experience
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: schedule
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: keyword
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: word
+                  type: nvarchar(20)
+
+  - changeSet:
+      id: 3
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: vacancy_keyword
+            columns:
+              - column:
+                  name: vacancy_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: keyword_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            constraintName: unique_vacancy_keyword_pair
+            columnNames: vacancy_id, keyword_id
+            tableName: vacancy_keyword
+        - addForeignKeyConstraint:
+            constraintName: vacancy_ref_fk
+            baseColumnNames: vacancy_id
+            baseTableName: vacancy_keyword
+            referencedColumnNames: id
+            referencedTableName: vacancy
+        - addForeignKeyConstraint:
+            constraintName: keyword_ref_fk
+            baseColumnNames: keyword_id
+            baseTableName: vacancy_keyword
+            referencedColumnNames: id
+            referencedTableName: keyword
+
+
