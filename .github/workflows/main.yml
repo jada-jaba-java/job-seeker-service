@@ -25,11 +25,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
-      - name: Test
-        run: ls /home/runner/work/job-seeker-service/job-seeker-service/target/site/jacoco
+        run: mvn -B package --file pom.xml && cp target/site/jacoco/jacoco.xml .
       - name: Report Coverage to Codacy
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: /home/runner/work/job-seeker-service/job-seeker-service/target/site/jacoco/jacoco.xml
+          coverage-reports: jacoco.xml
