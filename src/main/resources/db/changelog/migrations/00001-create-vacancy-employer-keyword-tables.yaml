@@ -13,8 +13,24 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: region_id
-                  type: int
+                  name: remote_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: archived
+                  type: boolean
+                  constraints:
+                    nullabl: false
+              - column:
+                  name: type
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employer_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
@@ -25,6 +41,11 @@ databaseChangeLog:
               - column:
                   name: description
                   type: ntext
+                  constraints:
+                    nullable: false
+              - column:
+                  name: area_id
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -57,8 +78,44 @@ databaseChangeLog:
                   type: nvarchar(20)
                   constraints:
                     nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publisted_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: vacancy
+
   - changeSet:
       id: 2
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: employer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: nvarchar(150)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: employer
+
+  - changeSet:
+      id: 3
       author: Mikhail Vyshinskiy
       changes:
         - createTable:
@@ -73,9 +130,12 @@ databaseChangeLog:
               - column:
                   name: word
                   type: nvarchar(20)
+      rollback:
+        - dropTable:
+            tableName: keyword
 
   - changeSet:
-      id: 3
+      id: 4
       author: Mikhail Vyshinskiy
       changes:
         - createTable:
@@ -107,5 +167,11 @@ databaseChangeLog:
             baseTableName: vacancy_keyword
             referencedColumnNames: id
             referencedTableName: keyword
-
-
+      rollback:
+        - dropAllForeignKeyConstraints:
+            baseTableName: vacancy_keyword
+        - dropUniqueConstraint:
+            tableName: vacancy_keyword
+            constraintName: unique_vacancy_keyword_pair
+        - dropTable:
+            tableName: vacancy_keyword
