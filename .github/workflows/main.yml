@@ -27,7 +27,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Test
-        run: ls /home/runner
+        run: ls /home/runner/work/job-seeker-service
       - name: Report Coverage to Codacy
         uses: codacy/codacy-coverage-reporter-action@master
         with:
