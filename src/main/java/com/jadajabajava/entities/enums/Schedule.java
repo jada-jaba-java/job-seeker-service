@@ -1,9 +1,9 @@
 package com.jadajabajava.entities.enums;
 
 public enum Schedule {
-    FULL_DAY,
+    FULLDAY,
     SHIFT,
     FLEXIBLE,
     REMOTE,
-    ROTATION
+    FLYINFLYOUT
 }

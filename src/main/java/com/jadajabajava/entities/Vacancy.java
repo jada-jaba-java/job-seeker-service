@@ -5,9 +5,14 @@ import com.jadajabajava.entities.enums.Employment;
 import com.jadajabajava.entities.enums.Experience;
 import com.jadajabajava.entities.enums.Schedule;
 import com.jadajabajava.entities.enums.Type;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -21,6 +26,10 @@ import java.util.Set;
 
 @Data
 @Entity
+@Builder
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Vacancy extends AbstractEntity {
 
     @NotNull(message = "{validation.vacancy.remote.id.null}")
@@ -43,7 +52,7 @@ public class Vacancy extends AbstractEntity {
     private String description;
 
     @NotNull(message = "{validation.vacancy.area.id.null}")
-    private Integer areaId;
+    private Long areaId;
 
     @Range(min = 0, max = 2000000, message = "{validation.vacancy.min.salary.range}")
     private Integer minSalary;
@@ -69,9 +78,9 @@ public class Vacancy extends AbstractEntity {
     @NotNull(message = "{validation.vacancy.published.at.null}")
     private OffsetDateTime publishedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "vacancy_keyword",
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "vacancy_skill",
             joinColumns = @JoinColumn(name = "vacancy_id"),
-            inverseJoinColumns = @JoinColumn(name = "keyword_id"))
-    private Set<Keyword> keywords;
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private Set<Skill> skills;
 }
