@@ -8,7 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 @Slf4j
-abstract public class AbstractService<T extends AbstractEntity> {
+public abstract class AbstractService<T extends AbstractEntity> {
     protected GenericRepository<T> repository;
     protected MessageSource messageSource;
 

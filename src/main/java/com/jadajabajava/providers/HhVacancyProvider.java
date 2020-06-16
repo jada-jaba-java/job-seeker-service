@@ -74,20 +74,22 @@ public class HhVacancyProvider implements VacancyProvider {
         // multiple areas in one query via HH-specific "area" params handling
         areas.forEach(areaId -> uriBuilder.queryParam("area", areaId));
 
+        Set<Vacancy> vacancies = new HashSet<>();
         try {
             Set<Long> vacancyIdList = fetchVacancyIds(HH_START_PAGE_NUMBER, uriBuilder, httpClient);
             log.debug("Total fetched vacancy IDs: {}", vacancyIdList.size());
-
-            Set<Vacancy> vacancies = new HashSet<>();
             for (Long vacancyId : vacancyIdList) {
                 vacancies.add(requestVacancyById(vacancyId));
             }
-            return vacancies;
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             String exceptionMessage = messageSource.getMessage("exception.vacancy.provider.request.failed", new Object[]{}, LocaleContextHolder.getLocale());
             log.debug(exceptionMessage, e);
             throw new VacancyProviderException(exceptionMessage, e);
+        } catch (InterruptedException e) {
+            log.debug("Thread was interrupted. Further execution is unsafe", e);
+            Thread.currentThread().interrupt();
         }
+        return vacancies;
     }
 
     private Vacancy requestVacancyById(Long hhVacancyId) throws IOException, InterruptedException {
@@ -130,9 +132,10 @@ public class HhVacancyProvider implements VacancyProvider {
 
         JsonNode root = mapper.readTree(httpResponse.body());
         Set<Long> vacancyIdList = fetchVacancyIdsFromNode(root);
-        Integer totalPages = root.get("pages").asInt();
-        if (++startPageNumber < totalPages) {
-            vacancyIdList.addAll(fetchVacancyIds(startPageNumber, uriBuilder, httpClient));
+        int totalPages = root.get("pages").asInt();
+        int nextPage = startPageNumber + 1;
+        if (nextPage < totalPages) {
+            vacancyIdList.addAll(fetchVacancyIds(nextPage, uriBuilder, httpClient));
         }
         return vacancyIdList;
     }
