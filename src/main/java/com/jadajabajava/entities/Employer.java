@@ -26,6 +26,6 @@ public class Employer extends AbstractEntity {
     @NotNull(message = "{validation.employer.remote.id.null}")
     private Long remoteId;
 
-    @OneToMany(mappedBy = "employer")
+    @OneToMany(mappedBy = "employer", orphanRemoval = true)
     private Set<Vacancy> vacancies;
 }

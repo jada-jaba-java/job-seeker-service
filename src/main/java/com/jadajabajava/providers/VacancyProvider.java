@@ -1,10 +1,12 @@
 package com.jadajabajava.providers;
 
 import com.jadajabajava.entities.Vacancy;
-
+import com.jadajabajava.exceptions.VacancyProviderException;
+import java.util.List;
 import java.util.Set;
 
 public interface VacancyProvider {
 
-    Set<Vacancy> fetchVacancies();
+    Set<Vacancy> requestVacancies(String query, List<Integer> areas) throws VacancyProviderException;
+
 }
