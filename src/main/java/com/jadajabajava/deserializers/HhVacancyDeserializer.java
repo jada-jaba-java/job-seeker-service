@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jadajabajava.entities.Employer;
+import com.jadajabajava.entities.Salary;
 import com.jadajabajava.entities.Skill;
 import com.jadajabajava.entities.Vacancy;
 import com.jadajabajava.entities.enums.Currency;
@@ -47,28 +48,16 @@ public class HhVacancyDeserializer extends JsonDeserializer<Vacancy> {
         String description = root.get("description").asText();
         Long areaId = root.get("area").get("id").asLong();
 
-        int salaryFrom = root.get("salary").get("from").asInt(0);
-        int salaryTo = root.get("salary").get("to").asInt(0);
-        if (root.get("salary").get("gross").asBoolean()) {
-            salaryFrom = Math.round(salaryFrom * NET_RATIO);
-            salaryTo = Math.round(salaryTo * NET_RATIO);
-        }
-        Currency currency = Currency.valueOf(root.get("salary").get("currency").asText().toUpperCase());
         Employment employment = Employment.valueOf(root.get("employment").get("id").asText().toUpperCase());
         Experience experience = Experience.valueOf(root.get("experience").get("id").asText().toUpperCase());
         Schedule schedule = Schedule.valueOf(root.get("schedule").get("id").asText().toUpperCase());
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(HH_DATE_TIME_PATTERN);
-
         OffsetDateTime createdAt = OffsetDateTime.parse(root.get("created_at").asText(), dateTimeFormatter);
         OffsetDateTime publishedAt = OffsetDateTime.parse(root.get("published_at").asText(), dateTimeFormatter);
 
-        Iterator<JsonNode> keySkills = root.get("key_skills").elements();
-        Set<Skill> vacancySkills = new HashSet<>();
-        while (keySkills.hasNext()) {
-            String skillTitle = keySkills.next().get("name").asText();
-            vacancySkills.add(new Skill(skillTitle));
-        }
+        Set<Skill> vacancySkills = buildSkillList(root.get("key_skills").elements());
+        Salary salary = buildSalary(root.get("salary"));
 
         Employer employer = employerService.findByRemoteId(employerRemoteId).orElseGet(() ->
                 Employer.builder()
@@ -76,8 +65,6 @@ public class HhVacancyDeserializer extends JsonDeserializer<Vacancy> {
                         .title(employerTitle)
                         .build()
         );
-
-        employerService.save(employer);
 
         return Vacancy.builder()
                 .remoteId(remoteId)
@@ -87,9 +74,7 @@ public class HhVacancyDeserializer extends JsonDeserializer<Vacancy> {
                 .title(vacancyTitle)
                 .description(description)
                 .areaId(areaId)
-                .minSalary(salaryFrom)
-                .maxSalary(salaryTo)
-                .currency(currency)
+                .salary(salary)
                 .employment(employment)
                 .experience(experience)
                 .schedule(schedule)
@@ -97,5 +82,30 @@ public class HhVacancyDeserializer extends JsonDeserializer<Vacancy> {
                 .publishedAt(publishedAt)
                 .skills(vacancySkills)
                 .build();
+    }
+
+    private Salary buildSalary(JsonNode salaryNode) {
+        Currency currency = null;
+        int minSalary = 0;
+        int maxSalary = 0;
+        if (!salaryNode.isNull()) {
+            minSalary = salaryNode.get("from").asInt(0);
+            maxSalary = salaryNode.get("to").asInt(0);
+            if (salaryNode.get("gross").asBoolean()) {
+                minSalary = Math.round(minSalary * NET_RATIO);
+                maxSalary = Math.round(maxSalary * NET_RATIO);
+            }
+            currency = Currency.valueOf(salaryNode.get("currency").asText().toUpperCase());
+        }
+        return new Salary(minSalary, maxSalary, currency);
+    }
+
+    private Set<Skill> buildSkillList(Iterator<JsonNode> keySkills) {
+        Set<Skill> vacancySkills = new HashSet<>();
+        while (keySkills.hasNext()) {
+            String skillTitle = keySkills.next().get("name").asText();
+            vacancySkills.add(new Skill(skillTitle));
+        }
+        return vacancySkills;
     }
 }

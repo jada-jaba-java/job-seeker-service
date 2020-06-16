@@ -1,6 +1,5 @@
 package com.jadajabajava.entities;
 
-import com.jadajabajava.entities.enums.Currency;
 import com.jadajabajava.entities.enums.Employment;
 import com.jadajabajava.entities.enums.Experience;
 import com.jadajabajava.entities.enums.Schedule;
@@ -10,10 +9,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -27,9 +27,9 @@ import java.util.Set;
 @Data
 @Entity
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Vacancy extends AbstractEntity {
 
     @NotNull(message = "{validation.vacancy.remote.id.null}")
@@ -38,10 +38,11 @@ public class Vacancy extends AbstractEntity {
     @NotNull(message = "{validation.vacancy.archived.null}")
     private Boolean archived;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "{validation.vacancy.type.null}")
     private Type type;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @NotNull(message = "{validation.vacancy.employer.null}")
     private Employer employer;
 
@@ -54,21 +55,18 @@ public class Vacancy extends AbstractEntity {
     @NotNull(message = "{validation.vacancy.area.id.null}")
     private Long areaId;
 
-    @Range(min = 0, max = 2000000, message = "{validation.vacancy.min.salary.range}")
-    private Integer minSalary;
+    @NotNull(message = "{validation.vacancy.salary.null}")
+    private Salary salary;
 
-    @Range(min = 0, max = 2000000, message = "{validation.vacancy.max.salary.range}")
-    private Integer maxSalary;
-
-    @NotNull(message = "{validation.vacancy.currency.null}")
-    private Currency currency;
-
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "{validation.vacancy.employment.null}")
     private Employment employment;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "{validation.vacancy.experience.null}")
     private Experience experience;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "{validation.vacancy.schedule.null}")
     private Schedule schedule;
 

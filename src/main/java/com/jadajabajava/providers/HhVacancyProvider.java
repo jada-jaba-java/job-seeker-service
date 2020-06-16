@@ -20,6 +20,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,11 +35,11 @@ public class HhVacancyProvider implements VacancyProvider {
     public static final Integer HH_PERIOD_DAYS = 30; // max 30
     public static final Integer HH_START_PAGE_NUMBER = 0;
 
-    // turn off detection of region, salary etc from query string
+    // turn off auto detection of region, salary etc from query string
     public static final Boolean HH_DISABLE_MAGIC = true;
 
     public static final String QUERY = "java";
-    public static final Integer AREA_ID = 2019;
+    public static final List<Integer> AREA_IDS = List.of(2019);
 
     public static final String USER_AGENT = "JSS";
     public static final Integer DEFAULT_TIMEOUT_SEC = 10;
@@ -66,30 +67,10 @@ public class HhVacancyProvider implements VacancyProvider {
         try {
             Set<Long> vacancyIds = fetchVacancyIds();
 
-            Vacancy vacancy = fetchVacancy(vacancyIds.iterator().next());
+            Vacancy vacancy = fetchVacancyData(vacancyIds.iterator().next());
 
             vacancyService.save(vacancy);
 
-            System.out.println(vacancy);
-
-/*            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(jsonBody);
-            JsonNode vacanciesNode = root.get("items");
-
-            if (Objects.isNull(vacanciesNode)) {
-                log.error("Invalid response: {}", jsonBody);
-                // no such item (invalid response)
-            }
-            if (!vacanciesNode.elements().hasNext()) {
-                log.debug("Response contains empty list");
-                return new HashSet<>();
-            }
-            log.debug("Found vacancies: {}", root.get("found").asText());
-
-            System.out.println("Looks list it's OK");
-            System.out.println(vacanciesNode.size());
-
-            Vacancy[] vacancies = mapper.treeToValue(vacanciesNode, Vacancy[].class);*/
 
         } catch (HttpRequestException e) {
             log.error("Unable to fetch vacancies: {}", e.getMessage(), e);
@@ -107,11 +88,13 @@ public class HhVacancyProvider implements VacancyProvider {
                 .fromUriString(HH_API_URL)
                 .path(HH_VACANCIES_PATH)
                 .queryParam("text", QUERY)
-                .queryParam("area", AREA_ID)
                 .queryParam("order_by", HH_ORDER_BY)
                 .queryParam("period", HH_PERIOD_DAYS)
                 .queryParam("per_page", HH_ITEMS_PER_PAGE)
                 .queryParam("no_magic ", HH_DISABLE_MAGIC);
+
+        // multiple areas in one query via HH-specific "area" params handling
+        AREA_IDS.forEach(areaId -> uriBuilder.queryParam("area", areaId));
 
         try {
             Set<Long> vacancyIdList = fetchLinksFromPage(HH_START_PAGE_NUMBER, uriBuilder, httpClient);
@@ -123,7 +106,7 @@ public class HhVacancyProvider implements VacancyProvider {
         }
     }
 
-    private Vacancy fetchVacancy(Long hhVacancyId) throws IOException, InterruptedException {
+    private Vacancy fetchVacancyData(Long hhVacancyId) throws IOException, InterruptedException {
         UriComponents uriComponents = UriComponentsBuilder
                 .fromUriString(HH_API_URL)
                 .path(HH_VACANCIES_PATH + hhVacancyId)

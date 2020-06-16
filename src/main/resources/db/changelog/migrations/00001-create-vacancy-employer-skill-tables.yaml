@@ -32,8 +32,6 @@ databaseChangeLog:
               - column:
                   name: employer_id
                   type: bigint
-                  constraints:
-                    nullable: false
               - column:
                   name: title
                   type: nvarchar(150)
@@ -62,8 +60,6 @@ databaseChangeLog:
               - column:
                   name: currency
                   type: nvarchar(3)
-                  constraints:
-                    nullable: false
               - column:
                   name: employment
                   type: nvarchar(20)
@@ -81,12 +77,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: created_at
-                  type: timestamp
+                  type: timestamp with time zone
                   constraints:
                     nullable: false
               - column:
                   name: published_at
-                  type: timestamp
+                  type: timestamp with time zone
                   constraints:
                     nullable: false
       rollback:

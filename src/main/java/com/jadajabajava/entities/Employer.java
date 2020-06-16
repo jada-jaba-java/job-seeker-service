@@ -15,9 +15,9 @@ import java.util.Set;
 @Data
 @Entity
 @Builder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Employer extends AbstractEntity {
 
     @NotBlank(message = "{validation.employer.title.blank}")

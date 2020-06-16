@@ -8,13 +8,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 @Slf4j
-public class AbstractService<T extends AbstractEntity> {
+abstract public class AbstractService<T extends AbstractEntity> {
     protected GenericRepository<T> repository;
     protected MessageSource messageSource;
 
     public T getById(Long id) throws NotExistException {
         return repository.findById(id).orElseThrow(() -> {
-            String exceptionMessage = messageSource.getMessage("exception.entity.not.exist",new Object[] { id }, LocaleContextHolder.getLocale());
+            String exceptionMessage = messageSource.getMessage(
+                    "exception.entity.not.exist", new Object[] { id }, LocaleContextHolder.getLocale());
             log.error(exceptionMessage);
             return new NotExistException(exceptionMessage);
         });
