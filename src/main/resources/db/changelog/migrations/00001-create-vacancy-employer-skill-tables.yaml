@@ -1,0 +1,181 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: vacancy
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: remote_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: archived
+                  type: boolean
+                  constraints:
+                    nullabl: false
+              - column:
+                  name: type
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: employer_id
+                  type: bigint
+              - column:
+                  name: title
+                  type: nvarchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: ntext
+                  constraints:
+                    nullable: false
+              - column:
+                  name: area_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: min_salary
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_salary
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: nvarchar(3)
+              - column:
+                  name: employment
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: experience
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: schedule
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: published_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: vacancy
+
+  - changeSet:
+      id: 2
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: employer
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: remote_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: nvarchar(150)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: employer
+
+  - changeSet:
+      id: 3
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: skill
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: nvarchar(20)
+      rollback:
+        - dropTable:
+            tableName: skill
+
+  - changeSet:
+      id: 4
+      author: Mikhail Vyshinskiy
+      changes:
+        - createTable:
+            tableName: vacancy_skill
+            columns:
+              - column:
+                  name: vacancy_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: skill_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            constraintName: unique_vacancy_skill_pair
+            columnNames: vacancy_id, skill_id
+            tableName: vacancy_skill
+        - addForeignKeyConstraint:
+            constraintName: vacancy_ref_fk
+            baseColumnNames: vacancy_id
+            baseTableName: vacancy_skill
+            referencedColumnNames: id
+            referencedTableName: vacancy
+        - addForeignKeyConstraint:
+            constraintName: skill_ref_fk
+            baseColumnNames: skill_id
+            baseTableName: vacancy_skill
+            referencedColumnNames: id
+            referencedTableName: skill
+      rollback:
+        - dropAllForeignKeyConstraints:
+            baseTableName: vacancy_skill
+        - dropUniqueConstraint:
+            tableName: vacancy_skill
+            constraintName: unique_vacancy_skill_pair
+        - dropTable:
+            tableName: vacancy_skill
