@@ -82,7 +82,7 @@ public class HhVacancyProvider implements VacancyProvider {
                 vacancies.add(requestVacancyById(vacancyId));
             }
         } catch (IOException e) {
-            String exceptionMessage = messageSource.getMessage("exception.vacancy.provider.request.failed", new Object[]{}, LocaleContextHolder.getLocale());
+            String exceptionMessage = messageSource.getMessage("exception.provider.vacancy.request.failed", new Object[]{}, LocaleContextHolder.getLocale());
             log.debug(exceptionMessage, e);
             throw new VacancyProviderException(exceptionMessage, e);
         } catch (InterruptedException e) {
