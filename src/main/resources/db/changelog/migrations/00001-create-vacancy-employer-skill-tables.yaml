@@ -85,7 +85,14 @@ databaseChangeLog:
                   type: timestamp with time zone
                   constraints:
                     nullable: false
+        - createSequence:
+            sequenceName: vacancy_sequence
+            startValue: 1
+            incrementBy: 50
+            cycle: false
       rollback:
+        - dropSequence:
+            sequenceName: vacancy_sequence
         - dropTable:
             tableName: vacancy
 
@@ -113,7 +120,14 @@ databaseChangeLog:
                   type: nvarchar(150)
                   constraints:
                     nullable: false
+        - createSequence:
+            sequenceName: employer_sequence
+            startValue: 1
+            incrementBy: 50
+            cycle: false
       rollback:
+        - dropSequence:
+            sequenceName: employer_sequence
         - dropTable:
             tableName: employer
 
@@ -134,7 +148,14 @@ databaseChangeLog:
               - column:
                   name: title
                   type: nvarchar(20)
+        - createSequence:
+            sequenceName: skill_sequence
+            startValue: 1
+            incrementBy: 50
+            cycle: false
       rollback:
+        - dropSequence:
+            sequenceName: skill_sequence
         - dropTable:
             tableName: skill
 

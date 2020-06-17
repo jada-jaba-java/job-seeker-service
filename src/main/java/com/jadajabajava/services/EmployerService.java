@@ -10,17 +10,16 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class EmployerService extends AbstractService<Employer> {
+public class EmployerService {
 
-    private final EmployerRepository employerRepository;
+    private final EmployerRepository repository;
 
     @Autowired
     public EmployerService(EmployerRepository repository) {
         this.repository = repository;
-        this.employerRepository = repository;
     }
 
     public Optional<Employer> findByRemoteId(Long remoteId) {
-        return employerRepository.findByRemoteId(remoteId);
+        return repository.findByRemoteId(remoteId);
     }
 }

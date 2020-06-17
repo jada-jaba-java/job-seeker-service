@@ -15,7 +15,9 @@ import java.util.Set;
 @Slf4j
 @Service
 @Transactional
-public class VacancyService extends AbstractService<Vacancy> {
+public class VacancyService {
+
+    private final VacancyRepository repository;
 
     private final VacancyProvider vacancyProvider;
 
