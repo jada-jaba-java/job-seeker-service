@@ -7,6 +7,6 @@ import java.util.Set;
 
 public interface VacancyProvider {
 
-    Set<Vacancy> requestVacancies(String query, List<Integer> areas) throws VacancyProviderException;
+    Set<Vacancy> requestVacancies(String query, List<Long> areas) throws VacancyProviderException;
 
 }

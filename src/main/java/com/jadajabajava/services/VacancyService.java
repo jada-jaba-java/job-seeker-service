@@ -5,6 +5,7 @@ import com.jadajabajava.exceptions.CommonServiceException;
 import com.jadajabajava.exceptions.VacancyProviderException;
 import com.jadajabajava.providers.VacancyProvider;
 import com.jadajabajava.repositories.VacancyRepository;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -33,7 +34,7 @@ public class VacancyService {
         this.messageSource = messageSource;
     }
 
-    public void refreshVacancies(String query, List<Integer> areas) throws CommonServiceException {
+    public void refreshVacancies(@NonNull String query, @NonNull List<Long> areas) throws CommonServiceException {
         try {
             Set<Vacancy> vacancies = vacancyProvider.requestVacancies(query, areas);
             vacancies.forEach(repository::save);
