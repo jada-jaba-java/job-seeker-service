@@ -1,0 +1,69 @@
+{
+  "items": [
+    {
+      "id": "37504692",
+      "premium": false,
+      "name": "Java Developer",
+      "department": null,
+      "has_test": false,
+      "response_letter_required": false,
+      "area": {
+        "id": "2086",
+        "name": "Дубна",
+        "url": "https://api.somejobservice.org/areas/2086"
+      },
+      "salary": null,
+      "type": {
+        "id": "open",
+        "name": "Открытая"
+      },
+      "address": {
+        "city": "Дубна",
+        "street": "улица Программистов",
+        "building": null,
+        "description": null,
+        "lat": 56.0,
+        "lng": 37.0,
+        "raw": "Дубна, улица Программистов",
+        "metro": null,
+        "metro_stations": [],
+        "id": "2733626"
+      },
+      "response_url": null,
+      "sort_point_distance": null,
+      "employer": {
+        "id": "221768",
+        "name": "Emp #1",
+        "url": "https://api.somejobservice.org/employers/221768",
+        "alternate_url": "https://somejobservice.org/employer/221768",
+        "logo_urls": {
+          "240": "https://somejobservicecdn.org/employer-logo/425534.png",
+          "original": "https://somejobservicecdn.org/employer-logo-original/188367.PNG",
+          "90": "https://somejobservicecdn.org/employer-logo/352677.png"
+        },
+        "vacancies_url": "https://api.somejobservice.org/vacancies?employer_id=221768",
+        "trusted": true
+      },
+      "published_at": "2020-06-16T09:40:55+0300",
+      "created_at": "2020-06-16T09:40:55+0300",
+      "archived": false,
+      "apply_alternate_url": "https://somejobservice.org/applicant/vacancy_response?vacancyId=37504692",
+      "insider_interview": null,
+      "url": "https://api.somejobservice.org/vacancies/37504692?host=somejobservice.org",
+      "alternate_url": "https://somejobservice.org/vacancy/37504692",
+      "relations": [],
+      "snippet": {
+        "requirement": "Опыт программирования на любом объектно-ориентированном языке. Знание Core <highlighttext>Java</highlighttext>, <highlighttext>Java</highlighttext> IO, <highlighttext>Java</highlighttext> Collections, <highlighttext>Java</highlighttext> Multithreading. Знание основных шаблонов проектирования. ",
+        "responsibility": "Коллективная разработка прикладного программного обеспечения. Написание собственного программного кода на языке <highlighttext>Java</highlighttext> в рамках существующего проекта. Разработка новых программных модулей..."
+      },
+      "contacts": null
+    }
+  ],
+  "found": 1,
+  "pages": 1,
+  "per_page": 100,
+  "page": 0,
+  "clusters": null,
+  "arguments": null,
+  "alternate_url": "https://somejobservice.org/search/vacancy?"
+}

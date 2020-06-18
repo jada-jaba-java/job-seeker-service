@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,21 +37,15 @@ public class HhVacancyProvider implements VacancyProvider {
     public static final Boolean HH_DISABLE_MAGIC = true;
 
     public static final String USER_AGENT = "JSS";
-    public static final Integer TIMEOUT_SEC = 10;
 
     private final HttpClient httpClient;
     private final ObjectMapper mapper;
     private final MessageSource messageSource;
 
     @Autowired
-    public HhVacancyProvider(HhVacancyDeserializer vacancyDeserializer, MessageSource messageSource) {
+    public HhVacancyProvider(HhVacancyDeserializer vacancyDeserializer, MessageSource messageSource, HttpClient httpClient) {
         this.messageSource = messageSource;
-
-        httpClient = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(Duration.ofSeconds(TIMEOUT_SEC))
-                .build();
+        this.httpClient = httpClient;
 
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Vacancy.class, vacancyDeserializer);
@@ -61,7 +54,7 @@ public class HhVacancyProvider implements VacancyProvider {
     }
 
     @Override
-    public Set<Vacancy> requestVacancies(String query, List<Integer> areas) throws VacancyProviderException {
+    public Set<Vacancy> requestVacancies(String query, List<Long> areas) throws VacancyProviderException {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder
                 .fromUriString(HH_API_URL)
                 .path(HH_VACANCIES_PATH)
@@ -82,7 +75,7 @@ public class HhVacancyProvider implements VacancyProvider {
                 vacancies.add(requestVacancyById(vacancyId));
             }
         } catch (IOException e) {
-            String exceptionMessage = messageSource.getMessage("exception.vacancy.provider.request.failed", new Object[]{}, LocaleContextHolder.getLocale());
+            String exceptionMessage = messageSource.getMessage("exception.provider.vacancy.request.failed", new Object[]{}, LocaleContextHolder.getLocale());
             log.debug(exceptionMessage, e);
             throw new VacancyProviderException(exceptionMessage, e);
         } catch (InterruptedException e) {
@@ -103,7 +96,6 @@ public class HhVacancyProvider implements VacancyProvider {
                 .GET()
                 .uri(uriComponents.toUri())
                 .setHeader("User-Agent", USER_AGENT)
-                .timeout(Duration.ofSeconds(TIMEOUT_SEC))
                 .build();
 
         log.debug("Executing HTTP request: {}", uriComponents.toUri());
@@ -123,12 +115,11 @@ public class HhVacancyProvider implements VacancyProvider {
                 .GET()
                 .uri(uriComponents.toUri())
                 .setHeader("User-Agent", USER_AGENT)
-                .timeout(Duration.ofSeconds(TIMEOUT_SEC))
                 .build();
 
         log.debug("Executing HTTP request: {}", uriComponents.toUri());
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        log.debug("Got response with code {}. Body length: {}", httpResponse.statusCode(), httpResponse.body().length());
+        log.debug("Got response with code {} (body length: {})", httpResponse.statusCode(), httpResponse.body().length());
 
         JsonNode root = mapper.readTree(httpResponse.body());
         Set<Long> vacancyIdList = fetchVacancyIdsFromNode(root);

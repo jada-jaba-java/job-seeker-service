@@ -1,0 +1,41 @@
+{
+  "id": "37076011",
+  "premium": false,
+  "billing_type": {
+    "id": "standard",
+    "name": "Стандарт"
+  },
+  "relations": [],
+  "name": "Java-разработчик",
+  "insider_interview": null,
+  "response_letter_required": false,
+  "area": {
+    "id": "2069",
+    "name": "Сергиев Посад",
+    "url": "https://api.somejobservice.org/areas/2069"
+  },
+  "salary": null,
+  "type": {
+    "id": "open",
+    "name": "Открытая"
+  },
+  "address": {
+    "city": "Сергиев Посад",
+    "street": "улица Дружбы",
+    "building": null,
+    "description": null,
+    "lat": 56.0,
+    "lng": 38.0,
+    "raw": "Сергиев Посад, улица Дружбы",
+    "metro": null,
+    "metro_stations": []
+  },
+  "allow_messages": true,
+  "site": {
+    "id": "jj",
+    "name": "somejobservice.org"
+  },
+  "experience": {
+    "id": "between3And6",
+    "name": "От 3 до 6 лет"
+  },
